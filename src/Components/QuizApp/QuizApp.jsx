@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react'
 export default function QuizApp() {
 
     let [question , setQuestions] = useState([]);
-    let [cureentIndex,setCurrentIndex]=useState(0);
+    let [cureentIndex,setCurrentIndex]=useState(0)
     
     
     useEffect(()=>{
@@ -33,18 +33,25 @@ export default function QuizApp() {
             return <h1>Welcome to user</h1>
         }
     }
-    
+    let restart =()=>{
+        setCurrentIndex(0)
+    }
 
     return (
         <div>
             <h4>{question[cureentIndex].question.text}</h4>
-            <p>{question[cureentIndex].incorrectAnswers[0]}</p>
-            <p>{question[cureentIndex].incorrectAnswers[1]}</p>
-            <p>{question[cureentIndex].incorrectAnswers[2]}</p>
-            <p>{question[cureentIndex].incorrectAnswers[3]}</p>
-            <button onClick={nextQuestion}>Next question</button>
-            {/* <button>{cureentIndex !== null ? "Edit Todo" : "Add Todo"}</button> */}
-            {/* <button style={{display : question.length -1 ? 'none':'block'}}>Back to quiz</button> */}
+            <input type="radio" name="" id="" />
+            <label htmlFor="">{question[cureentIndex].incorrectAnswers[0]}</label><br />
+            {/* <p>{question[cureentIndex].incorrectAnswers[0]}</p> */}
+            <input type="radio" name="" id="" />
+            <label htmlFor="">{question[cureentIndex].incorrectAnswers[1]}</label><br />
+            <input type="radio" name="" id="" />
+            <label htmlFor="">{question[cureentIndex].incorrectAnswers[2]}</label><br />
+            <input type="radio" name="" id="" />
+            <label htmlFor="">{question[cureentIndex].incorrectAnswers[3]}</label>            
+            <button onClick={nextQuestion} style={{ display: cureentIndex == 9 ? 'none': 'block'}}>Next question</button>
+            <button onClick={restart}  style={{ display: cureentIndex == 9 ? 'block': 'none'}}>Back</button>
+            <button style={{ display: cureentIndex == 9 ? 'block': 'none'}}>Finish</button>
         </div>
     )
 
