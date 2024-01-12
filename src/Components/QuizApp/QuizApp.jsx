@@ -3,7 +3,9 @@ import React, { useEffect, useState } from 'react'
 export default function QuizApp() {
 
     let [question , setQuestions] = useState([]);
-    let [cureentIndex,setCurrentIndex]=useState(0)
+    let [cureentIndex,setCurrentIndex]=useState(0);
+    let [correctOptions,setCorrectOptions]=useState([]);
+    let[score,setScore] = useState(0)
     
     
     useEffect(()=>{
@@ -13,45 +15,106 @@ export default function QuizApp() {
     let getDataFromAPI=()=>{
         fetch("https://the-trivia-api.com/v2/questions")
         .then(res => res.json())
-        .then(res => setQuestions(res))
-    }
+        .then(res => {
+            res.map((data)=>{
+                data.options = [...data.incorrectAnswers,data.correctAnswer];
+                data.options = shuffle(data.options);
+            })
+            setQuestions(res)
+            console.log(res)
 
+        })
+    }
+    function shuffle(array) {
+        let currentIndex = array.length,  randomIndex;
+      
+        // While there remain elements to shuffle.
+        while (currentIndex > 0) {
+      
+          // Pick a remaining element.
+          randomIndex = Math.floor(Math.random() * currentIndex);
+          currentIndex--;
+      
+          // And swap it with the current element.
+          [array[currentIndex], array[randomIndex]] = [
+            array[randomIndex], array[currentIndex]];
+        }
+      
+        return array;
+      }
+      
+      // Used like so
+      var arr = [2, 11, 37, 42];
+      shuffle(arr);
+    //   console.log(arr);
+// setQuestions(res)
     if(!question.length){
         return <h2>Loading ...</h2>
     }
-    let getCorrectAnswer=()=>{
-        let correctAnswer = question[cureentIndex].correctAnswer;
-        let incorrectAnswers =question[cureentIndex].incorrectAnswers;
-        incorrectAnswers.push(correctAnswer);
-        incorrectAnswers.sort(() => Math.random() - 0.5);
-        // console.log(question)
-    }
-    getCorrectAnswer()
+    // let input = document.getElementsByName('options')
+
     let nextQuestion =()=>{
-        setCurrentIndex(cureentIndex + 1)
-        if(question.length >= 10){
-            return <h1>Welcome to user</h1>
+        if(cureentIndex < question.length -1){
+            Score()
+            setCurrentIndex(cureentIndex + 1);
+            console.log(score)
+        }
+        // input.disabled =true
+    console.log(correctOptions)
+
+    }
+    let Score=()=>{
+        if(correctOptions === question[cureentIndex].correctAnswer){
+            setScore(score++)
         }
     }
     let restart =()=>{
         setCurrentIndex(0)
     }
+    
+    let getOptions=(e)=>{
+        let copyArr = [...correctOptions];
+        copyArr.push(e.target.value)
+        setCorrectOptions(copyArr);
+        // bttn.disabled=false
+        // console.log(e.target.value)
+    }
+    // let a = question[cureentIndex].correctAnswer;
+    // console.log(a)
+    // let finish=()=>{
+    //     if(correctOptions === question[cureentIndex].correctAnswer){
+    //         alert('good')
+    //     }
+    // }
+//    let show=()=>{
+//     console.log(correctOptions)
+//    }
+//    show()
 
     return (
         <div>
             <h4>{question[cureentIndex].question.text}</h4>
-            <input type="radio" name="" id="" />
-            <label htmlFor="">{question[cureentIndex].incorrectAnswers[0]}</label><br />
+            {
+                question[cureentIndex].options.map((data, index)=>{
+                    return <div key={index}>
+                        <input onChange={getOptions} type="radio" value={data} name="options" id="" />
+                        <label htmlFor="">{data}</label>
+                    </div>
+                    // console.log(data)
+                })
+            }
             {/* <p>{question[cureentIndex].incorrectAnswers[0]}</p> */}
+            {/* <input type="radio" name="" id="" />
+            <label htmlFor="">{question[cureentIndex].incorrectAnswers[0]}</label><br />
             <input type="radio" name="" id="" />
             <label htmlFor="">{question[cureentIndex].incorrectAnswers[1]}</label><br />
             <input type="radio" name="" id="" />
             <label htmlFor="">{question[cureentIndex].incorrectAnswers[2]}</label><br />
             <input type="radio" name="" id="" />
-            <label htmlFor="">{question[cureentIndex].incorrectAnswers[3]}</label>            
+            <label htmlFor="">{question[cureentIndex].incorrectAnswers[3]}</label>             */}
             <button onClick={nextQuestion} style={{ display: cureentIndex == 9 ? 'none': 'block'}}>Next question</button>
             <button onClick={restart}  style={{ display: cureentIndex == 9 ? 'block': 'none'}}>Back</button>
-            <button style={{ display: cureentIndex == 9 ? 'block': 'none'}}>Finish</button>
+            {/* <button onClick={finish} style={{ display: cureentIndex == 9 ? 'block': 'none'}}>Finish</button> */}
         </div>
     )
 
