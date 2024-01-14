@@ -11,7 +11,8 @@ export default function QuizApp() {
     let [cureentIndex,setCurrentIndex]=useState(0);
     let [correctOptions,setCorrectOptions]=useState([]);
     let[score,setScore] = useState(0);
-    let [percent,setPercent]=useState(0)
+    let [percent,setPercent]=useState(0);
+    // let[restartq,setRestartq]=useState(false)
     useEffect(()=>{
         getDataFromAPI()
     },[])
@@ -51,12 +52,16 @@ export default function QuizApp() {
     if(!question.length){
         return <img src={animatedLoader} alt="" id='loader' />
     }
-   
+//    let a = document.querySelector('input')
     let nextQuestion =()=>{
         abc()
-        if(cureentIndex < question.length -1){
-            setCurrentIndex(cureentIndex + 1);
-        }
+        // if(a.checked){
+            if(cureentIndex < question.length -1){
+                setCurrentIndex(cureentIndex + 1);
+            }
+        // }else{
+            // alert('wrong')
+        // }
     }
     let abc=()=>{
         if(correctOptions[correctOptions.length - 1]  === question[cureentIndex].correctAnswer){
@@ -68,7 +73,12 @@ export default function QuizApp() {
         }
     }
     let restart =()=>{
+        // console.log('hi')
         setCurrentIndex(0)
+        // if(!restartq){
+        //     setRestartq(true)
+        //     console.log(restartq)
+        // }
     }
     let getOptions=(e)=>{
         let copyArr = [...correctOptions];
@@ -125,7 +135,7 @@ style={{ display: cureentIndex == 9 ? 'block': 'none'} */}
             {/* <h1>Remarks :{ percent >=50 ? 'Congratulations' : 'none'}</h1> */}
             <h1 style={{display :percent >=50 ? 'block' : 'none'}}>Remarks : Congratulations</h1>
             <h1 style={{display :percent <=50 ? 'block' : 'none'}}>Remarks : Sorry!</h1>
-            <button id='restart' onClick={restart} >Restart</button>
+            {/* <button id='restart' onClick={restart} >Restart</button> */}
            </div>
         </div>
         // {percent >=50 ? 'Congratulations' : 'Sorry'}
