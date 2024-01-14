@@ -1,13 +1,17 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react';
+import './QuizApp.css';
+import animatedLoader from '../images/b4d657e7ef262b88eb5f7ac021edda87.gif';
+import success from '../images/successfully 2.gif'
+import alert from '../images/alert.gif'
+
 
 export default function QuizApp() {
 
     let [question , setQuestions] = useState([]);
     let [cureentIndex,setCurrentIndex]=useState(0);
     let [correctOptions,setCorrectOptions]=useState([]);
-    let[score,setScore] = useState(0)
-    
-    
+    let[score,setScore] = useState(0);
+    let [percent,setPercent]=useState(0)
     useEffect(()=>{
         getDataFromAPI()
     },[])
@@ -43,171 +47,88 @@ export default function QuizApp() {
         return array;
       }
       
-      // Used like so
-      var arr = [2, 11, 37, 42];
-      shuffle(arr);
-    //   console.log(arr);
-// setQuestions(res)
+      
     if(!question.length){
-        return <h2>Loading ...</h2>
+        return <img src={animatedLoader} alt="" id='loader' />
     }
-    // let input = document.getElementsByName('options')
-
+   
     let nextQuestion =()=>{
+        abc()
         if(cureentIndex < question.length -1){
-            Score()
             setCurrentIndex(cureentIndex + 1);
-            console.log(score)
         }
-        // input.disabled =true
-    console.log(correctOptions)
-
     }
-    let Score=()=>{
-        if(correctOptions === question[cureentIndex].correctAnswer){
-            setScore(score++)
+    let abc=()=>{
+        if(correctOptions[correctOptions.length - 1]  === question[cureentIndex].correctAnswer){
+            setScore(score + 1)            
+            console.log('done');
+        }else{
+        setScore(score)
+            console.log('wrong')
         }
     }
     let restart =()=>{
         setCurrentIndex(0)
     }
-    
     let getOptions=(e)=>{
         let copyArr = [...correctOptions];
         copyArr.push(e.target.value)
-        setCorrectOptions(copyArr);
-        // bttn.disabled=false
-        // console.log(e.target.value)
+        setCorrectOptions(copyArr);   
     }
-    // let a = question[cureentIndex].correctAnswer;
-    // console.log(a)
-    // let finish=()=>{
-    //     if(correctOptions === question[cureentIndex].correctAnswer){
-    //         alert('good')
-    //     }
-    // }
-//    let show=()=>{
-//     console.log(correctOptions)
-//    }
-//    show()
+    let finish=()=>{
+        document.querySelector('.result').style.display='block'
+        document.querySelector('#quizApp').style.display='none'
+        let percentage = (score / question.length) * 100;
+        setPercent(percentage);
+        // setInterval(() => {
+        // }, 1000);
+         <h2>loading ......</h2>
+        console.log('get score ->', score)
+        console.log('get percentage ->', percent)
+    }
+    console.log(score)
 
     return (
-        <div>
-            <h4>{question[cureentIndex].question.text}</h4>
+        <div className='main' >
+            <h2>Quiz App</h2>
+            <div className="quizApp" id='quizApp'  >     
+            <h4>{cureentIndex + 1}) {question[cureentIndex].question.text}</h4>
+            <div className="options">
             {
-                question[cureentIndex].options.map((data, index)=>{
-                    return <div key={index}>
-                        <input onChange={getOptions} type="radio" value={data} name="options" id="" />
-                        <label htmlFor="">{data}</label>
-                    </div>
-                    // console.log(data)
-                })
+            question[cureentIndex].options.map((data, index)=>{
+                return <div key={index}>
+                    <input onChange={getOptions}
+                    type="radio"
+                    value={data}
+                    // checked={correctOptions[index] === data}
+                    name="options"
+                    id=""
+                     />
+                    <label htmlFor="">{data}</label>
+                </div>
+            })
             }
-            {/* <p>{question[cureentIndex].incorrectAnswers[0]}</p> */}
-            {/* <input type="radio" name="" id="" />
-            <label htmlFor="">{question[cureentIndex].incorrectAnswers[0]}</label><br />
-            <input type="radio" name="" id="" />
-            <label htmlFor="">{question[cureentIndex].incorrectAnswers[1]}</label><br />
-            <input type="radio" name="" id="" />
-            <label htmlFor="">{question[cureentIndex].incorrectAnswers[2]}</label><br />
-            <input type="radio" name="" id="" />
-            <label htmlFor="">{question[cureentIndex].incorrectAnswers[3]}</label>             */}
-            <button onClick={nextQuestion} style={{ display: cureentIndex == 9 ? 'none': 'block'}}>Next question</button>
-            <button onClick={restart}  style={{ display: cureentIndex == 9 ? 'block': 'none'}}>Back</button>
-            {/* <button onClick={finish} style={{ display: cureentIndex == 9 ? 'block': 'none'}}>Finish</button> */}
+            </div>
+            <div className="bttns">
+             <button id='start' onClick={nextQuestion} style={{ display: cureentIndex == 9 ? 'none': 'block'}} >Next question</button>
+            {/* <button id='restart' onClick={restart} style={{ display: cureentIndex == 9 ? 'block': 'none'}}>Restart</button> */}
+            <button id='finish' onClick={finish} style={{ display: cureentIndex == 9 ? 'block': 'none'}}>Finish</button>
+            </div>
+            </div>
+            {/* style={{ display: cureentIndex == 9 ? 'block': 'none'}
+style={{ display: cureentIndex == 9 ? 'block': 'none'} */}
+           <div className="result">
+            <img style={{display :percent >=50 ? 'block' : 'none'}} src={success} alt="" />
+            <img style={{display :percent <=50 ? 'block' : 'none'}} src={alert} alt="" />
+            <h1>Score : {score}</h1>
+            <h1>Percentage : {percent}</h1>
+            {/* <h1>Remarks :{ percent >=50 ? 'Congratulations' : 'none'}</h1> */}
+            <h1 style={{display :percent >=50 ? 'block' : 'none'}}>Remarks : Congratulations</h1>
+            <h1 style={{display :percent <=50 ? 'block' : 'none'}}>Remarks : Sorry!</h1>
+            <button id='restart' onClick={restart} >Restart</button>
+           </div>
         </div>
+        // {percent >=50 ? 'Congratulations' : 'Sorry'}
+        // style={{ display: cureentIndex == 9 ? 'none': 'block'}}
     )
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//     let [questions,setQuestions] =useState([]);
-//     let [nextnextQuestion,setNextQuestion] = useState(0);
-//     let{correctAnswer,setCorrectAnswers} =useState()
-//     useEffect(()=>{
-//         getDataFromAPI()
-
-//     },[])
-//     let getDataFromAPI=()=>{
-//         fetch('https://the-trivia-api.com/v2/questions')
-//         .then(res => res.json())
-//         .then(res => {setQuestions(res);
-//             // console.log(questions.correctAnswer,questions.incorrectAnswers)
-//             console.log(res.correctAnswer)
-//             // getAnswer(res[0].correctAnswer,res[0].incorrectAnswers)
-//           })
-//     }
-//     // let getAnswer = (options,inCorrectAnswer)=>{
-//     //     let a = options;
-//     //     let b = inCorrectAnswer
-//     //     b.push(a)
-//     //     b.sort(() => Math.random() - 0.5);
-//     //     // setCorrectAnswer( b )
-//     //     getincorrectanswer(b)
-//     //     console.log(b)
-//     // }
-//     // let getincorrectanswer =(options)=>{
-//     //     console.log(questions)
-//     //     // if(options){
-//     //     //     setCorrectAnswers(options)
-
-//     //     // }
-//     // }
-    
-//     if(!questions.length){
-//         return <h2>Loding ...</h2>
-//     } 
-//     let nextQuestion =()=>{
-//         // console.log(correctAnswer)
-//         // console.log(shuffledOptions)
-//         setNextQuestion(nextnextQuestion + 1)
-//     }
-//     // let getAnswers=(answer)=>{
-//     //     setiNCorrectAnswer(answer[0].correctAnswer)
-//     // }
-//     // getAnswers(questions);
-//     // let getCorrectAnswer =(correctAnswer)=>{
-//     //     console.log(correctAnswer[0])
-//     // }
-//     // getCorrectAnswer(questions)
-//   return (
-//     <div>
-//         <h4>{questions[nextnextQuestion].question.text}</h4>
-//         {/* <p>{inCorrectAnswer} 
-//             {
-//                 questions.map((value)=>{
-                    
-//                     console.log(value.incorrectAnswers
-//                         )
-//                 })
-
-//             }
-//         </p> */}
-//         {/* <p>{correctAnswer}</p> */}
-//         {/* <p>{questions[nextnextQuestion].incorrectAnswers[0]}</p>
-//         <p>{questions[nextnextQuestion].incorrectAnswers[1]}</p>
-//         <p>{questions[nextnextQuestion].incorrectAnswers[2]}</p>
-//         <p>{questions[nextnextQuestion].incorrectAnswers[3]}</p> */}
-//         <button onClick={nextQuestion}>Next</button>
-//     </div>
-//   )
 }
